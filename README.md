@@ -21,5 +21,10 @@ $ ./build.sh opencl
 
 display lmp info
 ```console
-$ docker run --rm -it lammpsmpi "lmp -h"
+$ docker run --rm lammpsmpi "lmp -h"
+```
+
+run simulation in current dir
+```console
+$ docker run --rm -v "$(pwd)":/var/workdir --user $(id -u):$(id -g) lammpsmpi "lmp -h"
 ```
