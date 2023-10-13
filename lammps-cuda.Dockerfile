@@ -26,8 +26,6 @@ RUN  . "$VIRTUAL_ENV/bin/activate" && cd "$LAMMPS_SRC" && mkdir build && cd buil
        -D CMAKE_INSTALL_PREFIX="$VIRTUAL_ENV" -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_FULL_LIBDIR="$VIRTUAL_ENV/lib" ../cmake \
   && make -j$(nproc) && make install && make install-python
 
-RUN echo "PATH=\"$VIRTUAL_ENV/bin:\$PATH\"" >> ~/.bash_profile
-
 USER root
 
 RUN  emerge -c \
@@ -35,3 +33,8 @@ RUN  emerge -c \
   && rm -rf "$LAMMPS_SRC"
 
 USER lammps
+
+RUN echo "export PATH=\"$VIRTUAL_ENV/bin:\$PATH\""                           >> ~/.bash_profile
+RUN echo "export LAMMPS_POTENTIALS=\"$VIRTUAL_ENV/share/lammps/potentials\"" >> ~/.bash_profile
+
+WORKDIR /var/workdir
