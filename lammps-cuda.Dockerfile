@@ -15,7 +15,11 @@ ENV VIRTUAL_ENV="$HOME/.local"
 RUN virtualenv "$VIRTUAL_ENV"
 
 ENV LAMMPS_SRC="$HOME/lammps"
+
 RUN git clone -b release https://github.com/lammps/lammps.git "$LAMMPS_SRC"
+
+# RUN cd && wget https://github.com/lammps/lammps/archive/refs/tags/patch_22Dec2022.tar.gz
+# RUN cd && tar -xf patch_22Dec2022.tar.gz && mv lammps-patch_22Dec2022 "$LAMMPS_SRC" && rm *.tar.gz
 
 RUN  . "$VIRTUAL_ENV/bin/activate" && cd "$LAMMPS_SRC" && mkdir build && cd build \
   && cmake -D LAMMPS_INSTALL_RPATH=ON -D BUILD_SHARED_LIBS=yes \
@@ -25,6 +29,8 @@ RUN  . "$VIRTUAL_ENV/bin/activate" && cd "$LAMMPS_SRC" && mkdir build && cd buil
        -D PKG_MANYBODY=on -D PKG_VORONOI=on -D PKG_EXTRA-FIX=on \ 
        -D CMAKE_INSTALL_PREFIX="$VIRTUAL_ENV" -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_FULL_LIBDIR="$VIRTUAL_ENV/lib" ../cmake \
   && make -j$(nproc) && make install && make install-python
+
+RUN . "$VIRTUAL_ENV/bin/activate" && pip install numpy matplotlib
 
 USER root
 
